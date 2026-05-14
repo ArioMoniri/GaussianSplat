@@ -56,7 +56,14 @@ export function PosesScreen({ navigation, route }: Props) {
             sessionStore.upsert({ ...session, poses });
             Alert.alert(
               'Synthetic poses ready',
-              `Generated ${frameCount} circular-orbit cameras. Expect low-quality splats — replace with COLMAP / Record3D when you can.`,
+              `Generated ${frameCount} circular-orbit cameras. Next: export to your Mac and train.`,
+              [
+                { text: 'Stay here', style: 'cancel' },
+                {
+                  text: 'Continue to training',
+                  onPress: () => navigation.navigate('Train', { sessionId }),
+                },
+              ],
             );
           }}
         >

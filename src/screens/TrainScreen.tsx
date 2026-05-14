@@ -67,10 +67,13 @@ export function TrainScreen({ navigation, route }: Props) {
   return (
     <ScrollView contentContainerStyle={styles.root}>
       <Text style={styles.heading}>Train</Text>
-      <Text style={styles.body}>
-        Training a 3D Gaussian Splatting scene needs serious GPU time, so it runs on your Mac, not
-        the phone. Three steps:
-      </Text>
+      <View style={styles.banner}>
+        <Text style={styles.bannerTitle}>Training happens on your Mac.</Text>
+        <Text style={styles.bannerBody}>
+          The phone has no GPU for this. Tap the big blue button below to AirDrop the session to
+          your Mac, run one shell command, then come back and import the result.
+        </Text>
+      </View>
 
       <Step n={1} title="Export session to your Mac">
         <Text style={styles.body}>
@@ -185,6 +188,16 @@ const styles = StyleSheet.create({
   heading: { color: '#eee', fontSize: 22, fontWeight: '600', marginBottom: 12 },
   body: { color: '#bbb', lineHeight: 20, marginBottom: 12 },
   bodyOk: { color: '#8be78b', marginBottom: 12 },
+  banner: {
+    backgroundColor: '#1f2030',
+    borderLeftWidth: 4,
+    borderLeftColor: '#5b8def',
+    padding: 14,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  bannerTitle: { color: '#eee', fontWeight: '700', fontSize: 16, marginBottom: 4 },
+  bannerBody: { color: '#bbb', lineHeight: 20 },
   row: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
   step: {
     backgroundColor: '#15151c',
