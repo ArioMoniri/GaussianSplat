@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "GaussianSplat",
+    "slug": "gaussian-splat",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0b0b10"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ariomoniri.gaussiansplat",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Record video to capture 3D scenes for Gaussian splatting.",
+        "NSMicrophoneUsageDescription": "Capture audio alongside video (not used for splatting).",
+        "NSPhotoLibraryUsageDescription": "Pick existing videos or images to turn into splats."
+      }
+    },
+    "android": {
+      "package": "com.ariomoniri.gaussiansplat",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0b0b10"
+      },
+      "permissions": ["CAMERA", "RECORD_AUDIO", "READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO"],
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Record video to capture 3D scenes.",
+          "microphonePermission": "Audio is captured alongside video.",
+          "recordAudioAndroid": true
+        }
+      ]
+    ]
+  }
+}
