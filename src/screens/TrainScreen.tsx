@@ -46,7 +46,7 @@ export function TrainScreen({ navigation, route }: Props) {
       </View>
 
       <Text style={styles.body}>
-        That writes `<session>/output.splat`. Use the button below to attach it to this session.
+        That writes {'`<session>/output.splat`'}. Use the button below to attach it to this session.
       </Text>
 
       <Pressable style={[styles.btn, styles.btnPrimary]} onPress={importSplat}>

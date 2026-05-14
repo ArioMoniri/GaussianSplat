@@ -50,7 +50,9 @@ async function extractWeb(uri: string, opts: ExtractOptions): Promise<Frame[]> {
   for (const name of frameNames) {
     const data = await ffmpeg.readFile(name);
     const bytes = data instanceof Uint8Array ? data : new Uint8Array(0);
-    const blob = new Blob([bytes], { type: 'image/jpeg' });
+    const view = new Uint8Array(bytes.byteLength);
+    view.set(bytes);
+    const blob = new Blob([view.buffer], { type: 'image/jpeg' });
     frames.push({ uri: URL.createObjectURL(blob), selected: true });
   }
   return frames;

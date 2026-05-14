@@ -15,11 +15,11 @@ import type { RootStackParamList } from '../navigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Capture'>;
 
-export function CaptureScreen({ navigation }: Props) {
+export function CaptureScreen(props: Props) {
   const isWeb = Platform.OS === 'web';
 
-  if (isWeb) return <WebCapture navigation={navigation} />;
-  return <NativeCapture navigation={navigation} />;
+  if (isWeb) return <WebCapture {...props} />;
+  return <NativeCapture {...props} />;
 }
 
 function NativeCapture({ navigation }: Props) {

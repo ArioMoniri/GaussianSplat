@@ -5,9 +5,45 @@
 // the rendering / projection kernel in-browser so future phases can move work
 // off Python entirely.
 
+// Minimal WebGPU surface so this file type-checks without @types/webgpu.
+// The browser-supplied globals replace these at runtime.
+type GPUBufferUsageFlags = number;
+interface GPUBuffer { destroy?: () => void }
+interface GPUDevice {
+  queue: {
+    writeBuffer: (buf: GPUBuffer, offset: number, data: BufferSource) => void;
+    submit: (cmds: unknown[]) => void;
+    onSubmittedWorkDone: () => Promise<void>;
+  };
+  createBuffer: (desc: { size: number; usage: GPUBufferUsageFlags }) => GPUBuffer;
+  createShaderModule: (desc: { code: string }) => unknown;
+  createComputePipeline: (desc: unknown) => {
+    getBindGroupLayout: (i: number) => unknown;
+  };
+  createBindGroup: (desc: unknown) => unknown;
+  createCommandEncoder: () => {
+    beginComputePass: () => {
+      setPipeline: (p: unknown) => void;
+      setBindGroup: (i: number, g: unknown) => void;
+      dispatchWorkgroups: (n: number) => void;
+      end: () => void;
+    };
+    finish: () => unknown;
+  };
+}
+interface GPUAdapter { requestDevice: () => Promise<GPUDevice> }
+interface GPUGlobal { requestAdapter: () => Promise<GPUAdapter | null> }
+
+declare const GPUBufferUsage: {
+  STORAGE: number;
+  COPY_DST: number;
+  COPY_SRC: number;
+  UNIFORM: number;
+};
+
 declare global {
   interface Navigator {
-    gpu?: GPU;
+    gpu?: GPUGlobal;
   }
 }
 
