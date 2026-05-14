@@ -4,6 +4,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as DocumentPicker from 'expo-document-picker';
 import { sessionStore } from '../services/sessionStore';
 import { parsePoseFile } from '../services/poseImport';
+import { generateSyntheticOrbit } from '../services/poseSynthesis';
 import { TrajectoryPreview } from '../components/TrajectoryPreview';
 import type { RootStackParamList } from '../navigation';
 
@@ -37,13 +38,29 @@ export function PosesScreen({ navigation, route }: Props) {
   return (
     <View style={styles.root}>
       <Text style={styles.body}>
-        Drop a `transforms.json` (Nerfstudio / instant-NGP) or a Record3D pose JSON. Native on-device
-        SfM lands in a later phase — see docs/quickstart.md for the COLMAP recipe in the meantime.
+        Two ways to get poses. Real SfM (COLMAP / Record3D) gives sharp splats but you have to run
+        it externally — see docs/quickstart.md. The synthetic orbit assumes you walked a smooth
+        circle around the subject; quality is rough but the pipeline runs end-to-end without any
+        external tools.
       </Text>
 
       <View style={styles.row}>
         <Pressable style={[styles.btn, styles.btnPrimary]} onPress={pick}>
           <Text style={styles.btnLabel}>Import pose JSON</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.btn, styles.btnSecondary]}
+          onPress={() => {
+            const frameCount = session.frames?.length ?? 36;
+            const poses = generateSyntheticOrbit({ frameCount });
+            sessionStore.upsert({ ...session, poses });
+            Alert.alert(
+              'Synthetic poses ready',
+              `Generated ${frameCount} circular-orbit cameras. Expect low-quality splats — replace with COLMAP / Record3D when you can.`,
+            );
+          }}
+        >
+          <Text style={styles.btnLabel}>Generate synthetic orbit</Text>
         </Pressable>
       </View>
 
@@ -78,6 +95,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: 12, marginBottom: 16 },
   btn: { paddingHorizontal: 14, paddingVertical: 10, borderRadius: 8 },
   btnPrimary: { backgroundColor: '#5b8def' },
+  btnSecondary: { backgroundColor: '#2a2a36' },
   btnLabel: { color: 'white', fontWeight: '600' },
   preview: { flex: 1, marginVertical: 16 },
   error: { color: '#ef6b6b', marginBottom: 12 },

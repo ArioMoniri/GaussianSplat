@@ -23,6 +23,7 @@ export function FramesScreen({ navigation, route }: Props) {
   const [progress, setProgress] = useState(0);
   const [frames, setFrames] = useState<Frame[]>(session?.frames ?? []);
   const [fps, setFps] = useState(2);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!session) navigation.goBack();
@@ -33,6 +34,7 @@ export function FramesScreen({ navigation, route }: Props) {
   const run = async () => {
     setBusy(true);
     setProgress(0);
+    setError(null);
     try {
       const out = await extractFrames(session, {
         fps,
@@ -41,6 +43,8 @@ export function FramesScreen({ navigation, route }: Props) {
       });
       setFrames(out);
       sessionStore.upsert({ ...session, frames: out });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
       setBusy(false);
     }
@@ -81,6 +85,12 @@ export function FramesScreen({ navigation, route }: Props) {
           <ActivityIndicator color="#5b8def" />
           <Text style={styles.body}> {(progress * 100).toFixed(0)}%</Text>
         </View>
+      )}
+
+      {error && (
+        <Text style={styles.errorText}>
+          Frame extraction failed: {error}
+        </Text>
       )}
 
       <FlatList
@@ -150,4 +160,5 @@ const styles = StyleSheet.create({
     borderTopColor: '#222',
   },
   empty: { color: '#888', padding: 24, textAlign: 'center', lineHeight: 20 },
+  errorText: { color: '#ef6b6b', padding: 12, lineHeight: 20 },
 });
