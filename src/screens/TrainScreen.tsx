@@ -101,21 +101,36 @@ export function TrainScreen({ navigation, route }: Props) {
         )}
       </Step>
 
-      <Step n={2} title="Run the trainer on your Mac">
+      <Step n={2} title="Train the splat (pick one)">
         <Text style={styles.body}>
-          On your Mac, unzip the bundle, clone this repo, then run:
+          <Text style={styles.bold}>Easiest:</Text> open the Colab notebook below, upload your zip,
+          run all cells, download {'`output.splat`'}. ~10 min on a free T4 GPU.
         </Text>
-        <View style={styles.codeBlock}>
-          <Text style={styles.code}>
-            {`unzip session-${sessionId}.zip -d session-${sessionId}\n`}
-            {`cd /path/to/GaussianSplat/scripts\n`}
-            {`./train.sh /path/to/session-${sessionId}\n`}
-          </Text>
-        </View>
+        <Pressable
+          style={[styles.btn, styles.btnPrimary]}
+          onPress={() =>
+            Linking.openURL(
+              'https://colab.research.google.com/github/ArioMoniri/GaussianSplat/blob/main/scripts/train_colab.ipynb',
+            )
+          }
+        >
+          <Text style={styles.btnLabel}>Open Colab notebook</Text>
+        </Pressable>
+        <View style={{ height: 8 }} />
         <Text style={styles.body}>
-          That writes {'`session-' + sessionId + '/output.splat`'}. The script needs either
-          nerfstudio (recommended) or graphdeco-inria/gaussian-splatting on PATH.
+          <Text style={styles.bold}>Or train on your Mac:</Text> see docs/trainer-setup.md for the
+          Brush (no Python) and pyenv + nerfstudio recipes.
         </Text>
+        <Pressable
+          style={[styles.btn, styles.btnSecondary]}
+          onPress={() =>
+            Linking.openURL(
+              'https://github.com/ArioMoniri/GaussianSplat/blob/main/docs/trainer-setup.md',
+            )
+          }
+        >
+          <Text style={styles.btnLabel}>Open trainer-setup.md</Text>
+        </Pressable>
       </Step>
 
       <Step n={3} title="Import the .splat back into the app">
@@ -188,6 +203,7 @@ const styles = StyleSheet.create({
   heading: { color: '#eee', fontSize: 22, fontWeight: '600', marginBottom: 12 },
   body: { color: '#bbb', lineHeight: 20, marginBottom: 12 },
   bodyOk: { color: '#8be78b', marginBottom: 12 },
+  bold: { color: '#eee', fontWeight: '700' },
   banner: {
     backgroundColor: '#1f2030',
     borderLeftWidth: 4,

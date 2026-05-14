@@ -66,6 +66,27 @@ def ply_to_splat(ply: Path, splat: Path) -> None:
     run([sys.executable, str(Path(__file__).with_name('ply_to_splat.py')), str(ply), str(splat)])
 
 
+HELP_NO_TRAINER = """\
+No local 3DGS trainer was found.
+
+You have three options — see docs/trainer-setup.md for the full guide.
+
+  1. Colab (recommended, free GPU, zero install):
+       https://colab.research.google.com/github/ArioMoniri/GaussianSplat/blob/main/scripts/train_colab.ipynb
+       Upload your session-<id>.zip, run all cells, download output.splat.
+
+  2. Brush (Apple Silicon native, no Python):
+       https://github.com/ArthurBrussee/brush/releases
+       brush --source <session> --export-path output.ply
+
+  3. nerfstudio in a Python 3.10 venv (NOT system Python 3.13):
+       pyenv install 3.10.14 && pyenv local 3.10.14
+       python3 -m venv .venv && source .venv/bin/activate
+       pip install nerfstudio
+       ./train.sh <session>
+"""
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('session', type=Path)
@@ -76,10 +97,14 @@ def main() -> int:
     out = (args.out or (session / 'training_run')).resolve()
     out.mkdir(parents=True, exist_ok=True)
 
+    inria_repo = Path.home() / 'src' / 'gaussian-splatting'
     if have('ns-train'):
         ply = train_with_nerfstudio(session, out)
-    else:
+    elif inria_repo.exists():
         ply = train_with_inria(session, out)
+    else:
+        print(HELP_NO_TRAINER, file=sys.stderr)
+        return 2
 
     splat = session / 'output.splat'
     ply_to_splat(ply, splat)
