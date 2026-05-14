@@ -1,4 +1,4 @@
-import { PoseSet, CameraPose } from '../types';
+import type { PoseSet, CameraPose } from '../types/index.ts';
 
 export interface RawTransformsJson {
   fl_x?: number;
