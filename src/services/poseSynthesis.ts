@@ -4,9 +4,11 @@ export interface SyntheticOrbitOptions {
   frameCount: number;
   radius?: number;
   height?: number;
-  width?: number;
   imageWidth?: number;
   imageHeight?: number;
+  // Horizontal FOV in degrees. iPhone 13 Pro wide camera is ~73°.
+  horizontalFovDeg?: number;
+  // Explicit focal in pixels — overrides horizontalFovDeg if set.
   focalLength?: number;
 }
 
@@ -20,8 +22,11 @@ export function generateSyntheticOrbit(opts: SyntheticOrbitOptions): PoseSet {
     height = 0.0,
     imageWidth = 1280,
     imageHeight = 720,
-    focalLength = 900,
+    horizontalFovDeg = 70,
   } = opts;
+  const focalLength =
+    opts.focalLength ??
+    (0.5 * imageWidth) / Math.tan((horizontalFovDeg * Math.PI) / 360);
 
   const poses: CameraPose[] = [];
   for (let i = 0; i < frameCount; i++) {

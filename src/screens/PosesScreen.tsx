@@ -52,7 +52,12 @@ export function PosesScreen({ navigation, route }: Props) {
           style={[styles.btn, styles.btnSecondary]}
           onPress={() => {
             const frameCount = session.frames?.length ?? 36;
-            const poses = generateSyntheticOrbit({ frameCount });
+            const first = session.frames?.[0];
+            const poses = generateSyntheticOrbit({
+              frameCount,
+              imageWidth: first?.width,
+              imageHeight: first?.height,
+            });
             sessionStore.upsert({ ...session, poses });
             Alert.alert(
               'Synthetic poses ready',
